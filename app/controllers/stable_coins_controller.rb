@@ -6,13 +6,12 @@ class StableCoinsController < ApplicationController
     ActiveRecord::Base.transaction do
       color_id = params[:color_id]
       stable_coin = StableCoin.find_by(color_id:)
-      script_pubkey = Tapyrus::Script.parse_from_payload(stable_coin.contract.script_pubkey.htb)
+      redeem_script = Tapyrus::Script.parse_from_payload(stable_coin.contract.redeem_script.htb)
       unsigned_tx_hex = params[:unsigned_tx]
 
       tx = Tapyrus::Tx.parse_from_payload(unsigned_tx_hex.htb)
 
-      index = 0
-      sig_hash = tx.sighash_for_input(index, script_pubkey)
+      sig_hash = tx.sighash_for_input(0, redeem_script)
       key = Did.brand.key.to_tapyrus_key
       signature = key.sign(sig_hash) + [Tapyrus::SIGHASH_TYPE[:all]].pack('C')
 
