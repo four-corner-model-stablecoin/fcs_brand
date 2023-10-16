@@ -6,7 +6,7 @@ class StableCoinsController < ApplicationController
     ActiveRecord::Base.transaction do
       color_id = params[:color_id]
       stable_coin = StableCoin.find_by(color_id:)
-      script_pubkey = stable_coin.contract.script_pubkey
+      script_pubkey = Tapyrus::Script.parse_from_payload(stable_coin.contract.script_pubkey.htb)
       unsigned_tx_hex = params[:unsigned_tx]
 
       tx = Tapyrus::Tx.parse_from_payload(unsigned_tx_hex.htb)
