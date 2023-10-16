@@ -1,24 +1,25 @@
-# README
+# Brand server
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## イシュア契約
 
-Things you may want to cover:
+### [POST] /contracts/agreement/issuer
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- params
+  ```json
+  {
+    "name": string,
+    "did": string
+  }
+  ```
+- return
+  ```json
+  {
+    "color_id": string,
+    "script_pubkey": string,
+    "redeem_script": string,
+    "contracted_at": datetime, 
+    "effect_at": datetime, 
+    "expire_at": datetime,
+    "brand_did": string
+  }
+  ```
