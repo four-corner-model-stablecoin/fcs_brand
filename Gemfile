@@ -31,6 +31,10 @@ gem 'ridgepole'
 gem 'dotenv-rails'
 gem 'pry-rails'
 gem 'tapyrus'
+gem 'rails-erd'
+gem 'rubocop'
+gem 'rubocop-rails'
+gem 'json-jwt'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
