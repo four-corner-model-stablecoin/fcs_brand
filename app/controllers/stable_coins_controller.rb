@@ -11,12 +11,7 @@ class StableCoinsController < ApplicationController
 
       tx = Tapyrus::Tx.parse_from_payload(unsigned_tx_hex.htb)
 
-      # memo: outputsに複数トークンきたら詰む
       index = 0
-      tx.outputs.each do |output, i|
-        index = i if output.color_id == color_id
-      end
-
       sig_hash = tx.sighash_for_input(index, script_pubkey)
       key = Did.brand.key.to_tapyrus_key
       signature = key.sign(sig_hash) + [Tapyrus::SIGHASH_TYPE[:all]].pack('C')
