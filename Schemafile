@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+create_table 'dids', comment: 'DID' do |t|
+  t.references :issuer, null: true, foreign_key: { to_table: :issuers }
+  t.string 'short_form', null: false
+  t.index :short_form, unique: true
+end
+
+create_table 'issuers', comment: 'イシュア' do |t|
+  t.string 'name', null: false
+end
+
+create_table 'accounts', comment: '口座' do |t|
+  t.references :issuer, null: false, foreign_key: { to_table: :issuers }
+  t.decimal :balance, precision: 18, scale: 2, null: false, comment: '残高', default: 0.0
+  t.string :account_number, null: false, comment: '口座番号'
+  t.string :branch_code, null: false, comment: '支店コード'
+  t.string :branch_name, null: false, comment: '支店名'
+
+  t.timestamps null: false
+
+  t.index :account_number, unique: true
+end
+
+create_table 'contracts', comment: '契約' do |t|
+  t.references :issuer, null: false, foreign_key: { to_table: :issuers }
+  t.references :brand_did, null: false
+  t.references :issuer_did, null: false
+  t.string 'script_pubkey', null: false
+  t.string 'redeem_script', null: false
+  t.datetime 'contracted_at', null: false, comment: '契約締結日'
+  t.datetime 'effect_at', null: false, comment: '効力発生日'
+  t.datetime 'expire_at', null: false, comment: '失効日'
+end
+add_foreign_key :contracts, :dids, column: :brand_did_id
+add_foreign_key :contracts, :dids, column: :issuer_did_id
+
+create_table 'stable_coins', comment: 'ステーブルコイン' do |t|
+  t.references :contract, null: false, foreign_key: { to_table: :contracts }
+  t.string 'color_id', null: false
+end
+
