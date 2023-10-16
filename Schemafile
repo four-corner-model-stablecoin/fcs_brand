@@ -6,6 +6,13 @@ create_table 'dids', comment: 'DID' do |t|
   t.index :short_form, unique: true
 end
 
+create_table 'keys', comment: '鍵ペア' do |t|
+  t.references :did, null: true, foreign_key: { to_table: :dids }
+  t.string 'jwk', null: true, comment: 'hash.to_jsonしたもの'
+  t.string 'public_key', null: true
+  t.string 'private_key', null: true
+end
+
 create_table 'issuers', comment: 'イシュア' do |t|
   t.string 'name', null: false
 end
@@ -39,4 +46,3 @@ create_table 'stable_coins', comment: 'ステーブルコイン' do |t|
   t.references :contract, null: false, foreign_key: { to_table: :contracts }
   t.string 'color_id', null: false
 end
-
