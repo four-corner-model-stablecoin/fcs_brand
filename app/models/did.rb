@@ -5,4 +5,8 @@ class Did < ApplicationRecord
   belongs_to :issuer, optional: true
 
   validates :short_form, presence: true
+
+  def self.brand
+    find_by(short_form: ENV['BRAND_DID'])
+  end
 end

@@ -6,7 +6,7 @@ class ContractsController < ApplicationController
     ActiveRecord::Base.transaction do
       issuer = Issuer.find_or_create_by!(name: params[:name])
       issuer_did = Did.find_or_create_by!(short_form: params[:did], issuer:)
-      brand_did = Did.find_or_create_by!(short_form: ENV['BRAND_DID'])
+      brand_did = Did.brand
 
       issuer_pubkey = resolve_did(issuer_did).pubkey
       brand_pubkey =  resolve_did(brand_did).pubkey
