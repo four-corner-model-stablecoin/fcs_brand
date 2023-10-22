@@ -39,6 +39,25 @@ class ContractsController < ApplicationController
     end
   end
 
+  #アクワイアラとの契約締結
+  def agreement_with_acquirer
+    ActiveRecord::Base.transaction do
+      acquirer = Acquirer.find_or_create_by!(name: params[:name])
+      brand_did = Did.brand
+
+      contracted_at = Time.current
+      effect_at = 1.day.after
+      expire_at = 3.year.after
+
+      res = {
+        contracted_at:, effect_at:, expire_at:,
+        brand_did: brand_did.short_form
+      }
+
+      render json: res
+    end
+  end
+
   private
 
   # @param did Did
