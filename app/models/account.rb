@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class Account < ApplicationRecord
-  belongs_to :issuer
+  belongs_to :issuer, optional: true
+  belongs_to :acquirer, optional: true
 
   validates :balance, presence: true
   validates :account_number, presence: true

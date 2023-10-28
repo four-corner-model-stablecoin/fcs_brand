@@ -3,8 +3,9 @@
 class WithdrawalRequest < ApplicationRecord
   validates :request_id, presence: true
 
-  belongs_to :issuer, optional: true
-  belongs_to :acquirer, optional: true
+  belongs_to :stable_coin
+  belongs_to :issuer
+  belongs_to :acquirer
 
   enum status: {
     created: 0,

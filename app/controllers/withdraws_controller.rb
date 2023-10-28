@@ -7,10 +7,8 @@ class WithdrawsController < ApplicationController
     merchant_to_brand_txid = params[:merchant_to_brand_txid]
     merchant_to_brand_tx = Tapyrus::Tx.parse_from_payload(Glueby::Internal::RPC.client.getrawtransaction(merchant_to_brand_txid).htb)
 
-    request = WithdrawalRequest.create(request_id:, merchant_to_brand_txid: merchant_to_brand_txid, acquirer: acquirer_did.acquirer)
-
     # brand key
-    brand_key = Did.brand.key.to_tapyrus_key
+    brand_key = Did.first.key.to_tapyrus_key
 
     # token outpoint
     # vout = 0 で決めうち
@@ -18,8 +16,14 @@ class WithdrawsController < ApplicationController
     token_output = merchant_to_brand_tx.outputs.first
     token_script_pubkey = token_output.script_pubkey
     color_identifier = token_script_pubkey.color_id
-    contract = StableCoin.find_by(color_id: color_identifier.to_payload.bth).contract
-    issuer_key = resolve_did(contract.issuer.did.first)
+    stable_coin = StableCoin.find_by!(color_id: color_identifier.to_payload.bth)
+    issuer = stable_coin.contract.issuer
+    issuer_key = resolve_did(issuer.did)
+
+    request = WithdrawalRequest.create!(
+      request_id:, issuer:, acquirer: acquirer_did.acquirer, stable_coin:,
+      merchant_to_brand_txid: merchant_to_brand_txid, status: :created
+    )
 
     tx = Tapyrus::Tx.new
 
@@ -50,17 +54,17 @@ class WithdrawsController < ApplicationController
     tx.in[1].script_sig << key.pubkey
 
     brand_to_issuer_txid = Glueby::Internal::RPC.client.sendrawtransaction(tx.to_payload.bth)
-    generate_block
 
-    request.update!(brand_to_issuer_txid:)
-
-    # TODO: Transaction系の設計よく分からんのでパス
+    request.update!(brand_to_issuer_txid:, status: :transfering)
 
     # MEMO: 本来は非同期に実行、デモではgenerate_blockを用いて同期実行
     # if ENV['DEMO'] = 1
+    generate_block
+
     json = {
       request_id:,
-      brand_to_issuer_txid:,
+      merchant_to_brand_txid:,
+      brand_to_issuer_txid:
     }.to_json
     response = Net::HTTP.post(
       URI('http://localhost:3000/withdraw/create'),
@@ -69,6 +73,13 @@ class WithdrawsController < ApplicationController
     )
     body = JSON.parse(response.body)
     burn_txid = body['burn_txid']
+
+    request.update!(burn_txid:)
+
+    # TODO: イシュア・アクワイアラの口座操作
+    # issuer.account.update!(balance: balance - amount)
+    # acquirer.account.update!(balance: balance + amount)
+    # Create AccountTransaction
 
     render json: { brand_to_issuer_txid:, burn_txid: }
   end

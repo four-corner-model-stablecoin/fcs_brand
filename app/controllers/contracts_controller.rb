@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class ContractsController < ApplicationController
   protect_from_forgery
 
   # イシュアとの契約締結
   def agreement_with_issuer
     ActiveRecord::Base.transaction do
-      issuer = Issuer.find_or_create_by!(name: params[:name])
-      issuer_did = Did.find_or_create_by!(short_form: params[:did], issuer:)
-      brand_did = Did.brand
+      issuer_did = Did.find_or_create_by!(short_form: params[:did])
+      issuer = Issuer.find_or_create_by!(name: params[:name], did: issuer_did)
+      brand_did = Did.first
 
       issuer_pubkey = resolve_did(issuer_did).pubkey
       brand_pubkey =  resolve_did(brand_did).pubkey
@@ -42,14 +44,17 @@ class ContractsController < ApplicationController
   # アクワイアラとの契約締結
   def agreement_with_acquirer
     ActiveRecord::Base.transaction do
-      acquirer = Acquirer.find_or_create_by!(name: params[:name])
-      acquirer_did = Did.find_or_create_by!(short_form: params[:did], acquirer:)
-
-      brand_did = Did.brand
+      acquirer_did = Did.find_or_create_by!(short_form: params[:did])
+      acquirer = Acquirer.find_or_create_by!(name: params[:name], did: acquirer_did)
+      brand_did = Did.first
 
       contracted_at = Time.current
       effect_at = 1.day.after
       expire_at = 3.year.after
+
+      # スキップ
+      # contract = Contract.create!(acquirer:, brand_did:, acquirer_did:,
+      #                             contracted_at:, effect_at:, expire_at:)
 
       res = {
         contracted_at:, effect_at:, expire_at:,
