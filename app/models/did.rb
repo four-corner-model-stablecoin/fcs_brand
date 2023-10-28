@@ -4,6 +4,7 @@ class Did < ApplicationRecord
   has_many :contract_as_issuer, class_name: 'Contract', foreign_key: 'issuer_did_id'
 
   belongs_to :issuer, optional: true
+  belongs_to :acquirer, optional: true
 
   validates :short_form, presence: true
 

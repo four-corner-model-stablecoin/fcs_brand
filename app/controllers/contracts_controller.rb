@@ -39,10 +39,12 @@ class ContractsController < ApplicationController
     end
   end
 
-  #アクワイアラとの契約締結
+  # アクワイアラとの契約締結
   def agreement_with_acquirer
     ActiveRecord::Base.transaction do
       acquirer = Acquirer.find_or_create_by!(name: params[:name])
+      acquirer_did = Did.find_or_create_by!(short_form: params[:did], acquirer:)
+
       brand_did = Did.brand
 
       contracted_at = Time.current
@@ -55,30 +57,6 @@ class ContractsController < ApplicationController
       }
 
       render json: res
-    end
-  end
-
-  private
-
-  # @param did Did
-  # @return Tapyrus::Key
-  def resolve_did(did)
-    response = Net::HTTP.get(URI("#{ENV['DID_SERVICE_URI']}/did/resolve/#{did.short_form}"))
-    public_key_jwk = JSON.parse(response)['did']['didDocument']['verificationMethod'][0]['publicKeyJwk']
-    jwk = JSON::JWK.new(public_key_jwk)
-
-    jwk_to_tapyrus_key(jwk)
-  end
-
-  # @param jwk [JSON::JWK] EC secp256k1
-  # @return Tapyrus::Key
-  def jwk_to_tapyrus_key(jwk)
-    key = jwk.to_key
-
-    if key.private_key.nil?
-      Tapyrus::Key.new(pubkey: key.public_key.to_bn.to_s(16).downcase.encode('US-ASCII'), key_type: 0)
-    else
-      Tapyrus::Key.new(priv_key: key.private_key.to_s(16).downcase.encode('US-ASCII'), key_type: 0)
     end
   end
 end
