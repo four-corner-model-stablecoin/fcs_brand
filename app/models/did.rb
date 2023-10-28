@@ -8,6 +8,8 @@ class Did < ApplicationRecord
   validates :short_form, presence: true
 
   def self.brand
-    find_by(short_form: ENV['BRAND_DID'])
+    brand_did = Did.find_or_create_by!(short_form: ENV['BRAND_DID'])
+    brand_key = Key.find_or_create_by!(jwk: ENV['BRAND_DID_JWK'], did: brand_did)
+    brand_did
   end
 end
