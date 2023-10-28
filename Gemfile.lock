@@ -94,6 +94,9 @@ GEM
     ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    glueby (1.1.2)
+      activerecord (~> 6.1.3)
+      tapyrus (>= 0.3.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     iniparse (1.5.0)
@@ -289,6 +292,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
   dotenv-rails
+  glueby
   jbuilder (~> 2.7)
   json-jwt
   listen (~> 3.3)
