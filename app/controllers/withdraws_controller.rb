@@ -67,7 +67,7 @@ class WithdrawsController < ApplicationController
       brand_to_issuer_txid:
     }.to_json
     response = Net::HTTP.post(
-      URI('http://localhost:3000/withdraw/create'),
+      URI("#{ENV['ISSUER_URL']}/withdraw/create"),
       json,
       'Content-Type' => 'application/json'
     )
