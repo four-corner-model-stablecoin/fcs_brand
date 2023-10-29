@@ -37,5 +37,8 @@ module TapyrusBrand
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.hosts << "localhost"
+    config.hosts << "brand"
   end
 end
