@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StableCoinsController < ApplicationController
   protect_from_forgery
 
@@ -12,7 +14,7 @@ class StableCoinsController < ApplicationController
       tx = Tapyrus::Tx.parse_from_payload(unsigned_tx_hex.htb)
 
       sig_hash = tx.sighash_for_input(0, redeem_script)
-      key = Did.brand.key.to_tapyrus_key
+      key = Did.first.key.to_tapyrus_key
       signature = key.sign(sig_hash) + [Tapyrus::SIGHASH_TYPE[:all]].pack('C')
 
       res = {
