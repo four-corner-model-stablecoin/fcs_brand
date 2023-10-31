@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord
-  belongs_to :issuer, optional: true
-  belongs_to :acquirer, optional: true
-
   validates :balance, presence: true
   validates :account_number, presence: true
   validates :branch_code, presence: true
   validates :branch_name, presence: true
+
+  has_many :account_transactions
+  belongs_to :issuer, optional: true
+  belongs_to :acquirer, optional: true
 
   after_initialize do
     self.balance ||= 0.0

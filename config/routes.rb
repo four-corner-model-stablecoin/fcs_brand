@@ -5,4 +5,8 @@ Rails.application.routes.draw do
 
   post 'withdraw/create', to: 'withdraws#create'
   post 'withdraw/confirm', to: 'withdraws#confirm'
+
+  resources :accounts, only: %i[] do
+    resources :account_transactions, only: %i[index]
+  end
 end
