@@ -3,6 +3,7 @@
 class WithdrawsController < ApplicationController
   def create
     request_id = params[:request_id]
+    amount = params[:amount]
     acquirer_did = Did.find_by!(short_form: params[:acquirer_did])
     merchant_to_brand_txid = params[:merchant_to_brand_txid]
     merchant_to_brand_tx = Tapyrus::Tx.parse_from_payload(Glueby::Internal::RPC.client.getrawtransaction(merchant_to_brand_txid).htb)
@@ -21,7 +22,7 @@ class WithdrawsController < ApplicationController
     issuer_key = resolve_did(issuer.did)
 
     request = WithdrawalRequest.create!(
-      request_id:, issuer:, acquirer: acquirer_did.acquirer, stable_coin:,
+      request_id:, issuer:, acquirer: acquirer_did.acquirer, stable_coin:, amount:,
       merchant_to_brand_txid: merchant_to_brand_txid, status: :created
     )
 
@@ -63,6 +64,7 @@ class WithdrawsController < ApplicationController
 
     json = {
       request_id:,
+      amount:,
       merchant_to_brand_txid:,
       brand_to_issuer_txid:
     }.to_json
