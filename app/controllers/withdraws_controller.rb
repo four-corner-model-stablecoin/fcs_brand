@@ -79,7 +79,7 @@ class WithdrawsController < ApplicationController
     request.update!(burn_txid:)
 
     issuer_account = request.issuer.account
-    issuer_account.update!(balance: balance - amount)
+    issuer_account.update!(balance: issuer_account.balance - amount)
     AccountTransaction.create!(
       account: issuer_account,
       amount: -amount,
@@ -88,7 +88,7 @@ class WithdrawsController < ApplicationController
     )
 
     acquirer_account = request.acquirer.account
-    acquirer_account.update!(balance: balance + amount)
+    acquirer_account.update!(balance: acquirer_account.balance + amount)
     AccountTransaction.create!(
       account: acquirer_account,
       amount:,
