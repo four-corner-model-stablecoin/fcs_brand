@@ -78,10 +78,23 @@ class WithdrawsController < ApplicationController
 
     request.update!(burn_txid:)
 
-    # TODO: イシュア・アクワイアラの口座操作
-    # issuer.account.update!(balance: balance - amount)
-    # acquirer.account.update!(balance: balance + amount)
-    # Create AccountTransaction
+    issuer_account = request.issuer.account
+    issuer_account.update!(balance: balance - amount)
+    AccountTransaction.create!(
+      account: issuer_account,
+      amount: -amount,
+      transaction_type: :transfer,
+      transaction_time: DateTime.current
+    )
+
+    acquirer_account = request.acquirer.account
+    acquirer_account.update!(balance: balance + amount)
+    AccountTransaction.create!(
+      account: acquirer_account,
+      amount:,
+      transaction_type: :transfer,
+      transaction_time: DateTime.current
+    )
 
     render json: { brand_to_issuer_txid:, burn_txid: }
   end
