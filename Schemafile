@@ -28,8 +28,8 @@ create_table 'acquirers', comment: 'アクワイアラ' do |t|
 end
 
 create_table 'accounts', comment: '口座' do |t|
-  t.references :issuer, null: false, foreign_key: { to_table: :issuers }
-  t.references :acquirer, null: false, foreign_key: { to_table: :acquirers }
+  t.references :issuer, null: true, foreign_key: { to_table: :issuers }
+  t.references :acquirer, null: true, foreign_key: { to_table: :acquirers }
   t.decimal :balance, precision: 18, scale: 2, null: false, comment: '残高', default: 0.0
   t.string :account_number, null: false, index: { unique: true }, comment: '口座番号'
   t.string :branch_code, null: false, comment: '支店コード'
