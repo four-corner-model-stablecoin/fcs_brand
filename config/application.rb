@@ -21,6 +21,7 @@ Bundler.require(*Rails.groups)
 
 # Tapyrus gem
 include Tapyrus::Opcodes
+Dotenv::Railtie.load
 
 module TapyrusBrand
   class Application < Rails::Application
