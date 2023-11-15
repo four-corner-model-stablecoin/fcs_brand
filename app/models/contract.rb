@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# イシュア・アクワイアラとの契約を管理するモデル
+# TODO: アクワイアラ未対応
 class Contract < ApplicationRecord
   has_one :stable_coin
 

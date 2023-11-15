@@ -4,6 +4,7 @@ class StableCoinsController < ApplicationController
   protect_from_forgery
 
   # コイン発行
+  # イシュアからリクエストを受付け、署名して返送
   def issue
     ActiveRecord::Base.transaction do
       color_id = params[:color_id]

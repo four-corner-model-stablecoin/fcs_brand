@@ -10,11 +10,15 @@ class ContractsController < ApplicationController
       issuer = Issuer.find_or_create_by!(name: params[:name], did: issuer_did)
       brand_did = Did.first
 
+      # DID から公開鍵を取り出す
       issuer_pubkey = resolve_did(issuer_did).pubkey
       brand_pubkey =  resolve_did(brand_did).pubkey
+
+      # 2-of-2 multiSig を作成
       redeem_script = Tapyrus::Script.new << 2 << [issuer_pubkey, brand_pubkey] << 2 << OP_CHECKMULTISIG
       script_pubkey = redeem_script.to_p2sh
 
+      # カラー識別子を導出
       color_identifier = Tapyrus::Color::ColorIdentifier.reissuable(script_pubkey)
       color_id = color_identifier.to_payload.bth
 
@@ -52,7 +56,7 @@ class ContractsController < ApplicationController
       effect_at = 1.day.after
       expire_at = 3.year.after
 
-      # スキップ
+      # MEMO: 一旦使わないのでスキップ
       # contract = Contract.create!(acquirer:, brand_did:, acquirer_did:,
       #                             contracted_at:, effect_at:, expire_at:)
 

@@ -1,9 +1,15 @@
 <h2>
-  AccountTransaction
+  現金口座残高履歴
 </h2>
 
 <h3>
-  <%= "Account##{@account.id}" %>
+  <% if @account.id == 1 %>
+    イシュア口座
+  <% elsif @account.id == 2 %>
+    アクワイアラ口座
+  <% else %>
+    <%= "Account##{@account.id}" %>
+  <% end %>
 </h3>
 
 <table>

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# イシュアモデル
 class Issuer < ApplicationRecord
   has_one :account
   has_many :withdrawal_requests

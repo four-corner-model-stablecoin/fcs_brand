@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# イシュア・アクワイアラ現金口座
 class Account < ApplicationRecord
   validates :balance, presence: true
   validates :account_number, presence: true

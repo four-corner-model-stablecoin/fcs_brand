@@ -58,7 +58,7 @@ class WithdrawsController < ApplicationController
 
     request.update!(brand_to_issuer_txid:, status: :transfering)
 
-    # MEMO: 本来は非同期に実行、デモではgenerate_blockを用いて同期実行
+    # MEMO: 本来は非同期に実行、デモではgenerate_blockを用いて同期的に実行
     # if ENV['DEMO'] = 1
     generate_block
 
@@ -78,6 +78,7 @@ class WithdrawsController < ApplicationController
 
     request.update!(burn_txid:)
 
+    # イシュアの現金口座を操作
     issuer_account = request.issuer.account
     issuer_account.update!(balance: issuer_account.balance - amount)
     AccountTransaction.create!(
@@ -87,6 +88,7 @@ class WithdrawsController < ApplicationController
       transaction_time: DateTime.current
     )
 
+    # アクワイアラの現金口座を操作
     acquirer_account = request.acquirer.account
     acquirer_account.update!(balance: acquirer_account.balance + amount)
     AccountTransaction.create!(
