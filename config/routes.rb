@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :accounts, only: %i[] do
     resources :account_transactions, only: %i[index]
+
+    resources :withdrawal_requests, only: %i[show]
   end
 
   namespace :api do

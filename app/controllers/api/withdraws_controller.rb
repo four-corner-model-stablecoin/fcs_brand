@@ -99,6 +99,9 @@ module Api
         transaction_time: DateTime.current
       )
 
+      # TODO: request に AccountTransaction 保存するべきでは？
+      request.update!(status: :completed)
+
       render json: { brand_to_issuer_txid:, burn_txid: }
     end
 
