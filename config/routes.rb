@@ -13,5 +13,7 @@ Rails.application.routes.draw do
 
     post 'withdraw/create', to: 'withdraws#create'
     post 'withdraw/confirm', to: 'withdraws#confirm'
+
+    resources :withdrawal_requests, only: %i[show]
   end
 end
